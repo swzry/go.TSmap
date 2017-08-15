@@ -6,6 +6,9 @@ type TSmap interface {
 	Set(k,v interface{})
 	Get(k interface{}) (interface{},bool)
 	Delete(k interface{})
+	ForEach(f func(k,v interface{}))
+	GoForEach(f func(k,v interface{}))
+	Len() int
 }
 
 type NewTSmap struct{
@@ -30,4 +33,24 @@ func (this *NewTSmap)Delete(k interface{})  {
 	this.lock.Lock()
 	defer this.lock.Unlock()
 	delete(this.ConMap,k)
+}
+
+func (this *NewTSmap)ForEach(f func(k,v interface{})) {
+	for key := range this.ConMap {
+		_k,_ := this.Get(key)
+		f(key,_k)
+	}
+}
+
+func (this *NewTSmap)GoForEach(f func(k,v interface{})) {
+	for key := range this.ConMap {
+		go func() {
+			_k,_ := this.Get(key)
+			f(key,_k)
+		}()
+	}
+}
+
+func (this *NewTSmap)Len() int {
+	return len(this.ConMap)
 }

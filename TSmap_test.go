@@ -25,4 +25,7 @@ func TestBasic(t *testing.T)  {
 			tsmap.Get(fmt.Sprintf("%v",i))
 		}
 	}()
+	tsmap.GoForEach(func(k,v interface{}) {
+
+	})
 }
